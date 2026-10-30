@@ -2,6 +2,13 @@
 
 Verified on 2026-10-30 against the supplied EU High `Rel_A2.24.41.20` firmware.
 
+Matching-version follow-up: the owner supplied `Rel_A2.25.15.20`, which matches
+the system-information photograph. Its receiver and wrapper are byte-identical
+to those audited here; the transport verifier was rerun successfully against
+the newer extraction. The USB-only finding applies to both packages. This is
+still an offline result, not an on-unit connection test. See the
+[version comparison](firmware-version-comparison.md).
+
 ## Answer
 
 **The Android Auto receiver shipped in this image uses USB-only projection

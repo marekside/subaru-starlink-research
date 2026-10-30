@@ -1,0 +1,4 @@
+{"at":0,"signal":"navClusterNavigationStatus","payload":{"operable":1,"failureMode":0,"guidanceActive":1}}
+{"at":1,"signal":"navClusterNextTurnInfo","payload":{"interruptFlag":0,"category":7,"rotaryAvailable":0,"segment":0,"turnIcon":91}}
+{"at":2,"signal":"navClusterNextTurnInfo","payload":{"turnIcon":92}}
+{"at":3,"signal":"navClusterNextDestinationInfo","payload":{"units":0,"digitPoint":1,"etaChangeFlag":0,"distance":1234,"second":60}}

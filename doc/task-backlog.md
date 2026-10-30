@@ -2,7 +2,12 @@
 
 Agreed constraints: preserve the stock Android Auto integration, leave bootloader
 and recovery components intact, and retain a demonstrated return to stock.
-Applies to the supplied EU High `Rel_A2.24.41.20` image and the owner's 2017 XV.
+Both EU High stock packages, `Rel_A2.24.41.20` and `Rel_A2.25.15.20`, have now
+been compared offline. The newer version matches the owner's 2017 XV screen.
+The relevant receiver, wrapper, display and HMI binaries are identical, and the
+static audits pass against the newer extraction. See the
+[version comparison](firmware-version-comparison.md). Runtime behavior and
+recovery remain unverified; no downgrade or installation is required.
 The owner confirms stock TomTom turn instructions on both secondary displays.
 
 ## Governing requirement: reversible changes
@@ -47,6 +52,22 @@ active priorities below have been renumbered.
 - Extracted the system, updater, navigation software and nested application images.
 - Identified the stock navigation/display interfaces and Android Auto callback code.
 - Verified that the supplied receiver's projection transport is USB-only.
+
+## T02–T05 execution status
+
+Offline work has started on the four selected tasks. Detailed evidence,
+reproduction commands and remaining gates are in
+[navigation bridge progress](navigation-bridge-progress.md).
+
+| Task | Current deliverable | Open gate |
+| --- | --- | --- |
+| T02 | [Diagnostic access and recovery worksheet](diagnostic-access-and-recovery.md); matching-version package now verified and compared | Only installed unit available. Export/access/storage/backups/restore remain unverified |
+| T03 | Callback audit now includes setup caller, configured endpoint values and bounded synthetic dispatch probes | Full typed ABI/lifetimes/threading, other registration paths and runtime behavior remain unresolved |
+| T04 | Producer format strings and consumer integer mappings confirmed; per-display capture plan documented | No stock runtime messages or validated per-screen enum/scaling/routing/timing yet |
+| T05 | Semantic replay/HTML preview plus native contract observation replay; 18 tests pass with analysis dependencies | Raw-capture adapter and validated semantic-to-native translation await T03/T04 |
+
+No on-unit changes, firmware patches or installer have been made. These are
+partial deliverables; T02–T05 are not marked complete.
 
 ## Execution order
 
@@ -113,10 +134,15 @@ interfaces.
 
 ## Suggested next work
 
-The next software task is **T03: trace navigation callback registration in the
-Cinemo/Harman wrapper**. **T02: diagnostic access and recovery** is the highest
-active priority and a prerequisite for head-unit feature deployment. Wireless
-connectivity is left to the owner's external adapter.
+Continue **T03** with full callback types/ownership and remaining registration
+paths; the reviewed setup caller and endpoint values are now traced. For **T04**,
+identify an actually available stock observation route:
+the owner reports no analytics export entry in the special menu, so no capture
+is currently available. **T05** can already exercise
+synthetic events; real native translation awaits validated contracts.
+**T02: diagnostic access and recovery** remains the highest active priority and
+a prerequisite for head-unit feature deployment. Wireless connectivity is left
+to the owner's external adapter.
 
 Evidence: [initial assessment](firmware-assessment.md),
 [offline extraction and interface analysis](offline-analysis-results.md),

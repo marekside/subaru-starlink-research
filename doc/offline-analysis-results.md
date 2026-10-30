@@ -3,6 +3,12 @@
 Follow-up to [the initial assessment](firmware-assessment.md), completed on
 2026-10-30 against the supplied EU High `Rel_A2.24.41.20` package.
 
+The owner subsequently supplied the matching `Rel_A2.25.15.20` package as well.
+The relevant receiver, wrapper, display-service, HMI and navigation files are
+byte-identical, and the static audits pass against its extraction. See the
+[version comparison](firmware-version-comparison.md). The historical results
+below describe the first package; runtime and recovery remain unverified.
+
 A subsequent [wireless transport audit](wireless-android-auto-verification.md)
 traced an explicit USB-only protocol gate and transport constructor in the
 bundled Android Auto receiver. Native wireless is absent from that stock path;
@@ -23,8 +29,12 @@ navigation-display capability on both installed screens. Reusing those stock
 paths is therefore the target; the transport details and Android Auto connection
 still need validation separately for each display.
 
-No firmware was installed, repacked or patched. The only emulated firmware code
-was a hash-pinned, pure decompression routine with no QNX system/device access.
+No firmware was installed, repacked or patched. During this initial extraction,
+the only emulated firmware code was a hash-pinned, pure decompression routine
+with no QNX system/device access. A later
+[navigation investigation](navigation-bridge-progress.md#endpoint-setup-and-bounded-dispatch-probes)
+also probes three isolated callback dispatch routines with synthetic inputs;
+it does not boot QNX or emulate OS services/devices.
 Stock files remain unchanged; rehashing the three analyzed encrypted payloads and
 the ISO confirms their original baseline hashes.
 
@@ -112,6 +122,12 @@ Decryption enables inspection; it does not supply the OEM signing private key or
 a validated way to install modified content. No verification bypass was built.
 
 ## Android Auto: endpoints exist, connection remains unresolved
+
+Follow-up: [navigation bridge progress](navigation-bridge-progress.md) now traces
+the reviewed wrapper's three null navigation slots through the receiver table
+copy and endpoint gate. It includes a reproducible hash-pinned audit and a
+semantic PC replay prototype. Other registration paths and runtime behavior
+remain unverified; the discussion below records the earlier investigation.
 
 The relevant components are now identified:
 
@@ -227,8 +243,8 @@ Using new output paths, after the ISO/minifs extraction from the initial pass:
 
 ```powershell
 python tools/inspect_firmware.py startup-ifs analysis/stock-iso/ifs/ifs-dra74x-subaru.bin analysis/mainifs
-python tools/verify_stock_auth.py usbUpdateStock/KaliSWDL analysis/verified-stock-authentication.json
-python tools/extract_cndfs.py usbUpdateStock/KaliSWDL/system.dat analysis/system
+python tools/verify_stock_auth.py usbUpdateStock_Rel_A2.24.41.20/KaliSWDL analysis/verified-stock-authentication.json
+python tools/extract_cndfs.py usbUpdateStock_Rel_A2.24.41.20/KaliSWDL/system.dat analysis/system
 python tools/extract_qnx6.py analysis/system/filesystem.qnx6 analysis/system-files
 python tools/inspect_firmware.py ifs analysis/system-files/files/ifs_images/second1.ifs analysis/second1
 ```

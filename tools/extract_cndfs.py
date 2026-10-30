@@ -163,7 +163,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('source', type=Path)
     parser.add_argument('output', type=Path)
-    parser.add_argument('--iso', type=Path, default=Path('usbUpdateStock/KaliSWDL/swdl.iso'))
+    parser.add_argument('--iso', type=Path, default=Path('usbUpdateStock_Rel_A2.24.41.20/KaliSWDL/swdl.iso'),
+                        help='Matching source ISO; pass explicitly for another release')
     parser.add_argument('--keyfile', type=Path, default=Path('analysis/mainifs/files/etc/keys/symm.key'))
     parser.add_argument('--decoder', type=Path, default=Path('analysis/minifs/files/miniFS/bin/cdqnx6fs'))
     args = parser.parse_args()

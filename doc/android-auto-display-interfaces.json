@@ -1,6 +1,17 @@
 {
   "status": "Observed in static analysis; not a validated runtime API or transmit recipe",
   "firmware": "EU High Rel_A2.24.41.20",
+  "also_verified_firmware": "EU High Rel_A2.25.15.20; relevant binaries byte-identical and static audits repeated",
+  "version_comparison": "doc/firmware-version-comparison.md",
+  "installed_firmware": {
+    "version": "Rel_A2.25.15.20",
+    "source": "Owner system-information photograph, 2026-10-30",
+    "matches_analyzed_package": true,
+    "warning": "Matching-version stock package now compared and audited offline; this is not a dump or runtime validation of the installed unit. No downgrade or installation is authorized.",
+    "diagnostic_menu_observed": "Factory Settings > Connection",
+    "analytics_export": "Owner reports no entry in the menu reached; availability in other menus remains unverified",
+    "matching_spare_available": false
+  },
   "owner_observation": {
     "date": "2026-10-30",
     "source": "Owner report; not a captured bus trace",
@@ -21,7 +32,38 @@
     "observed_callbacks": ["OnNavigation_Status", "OnNavigation_NextTurn", "OnNavigation_NextTurnDistance"],
     "wrapper_library": "analysis/second1/files/second1/lib/libGALSVC.so",
     "reviewed_callback_registration": "0x16a1c",
-    "unresolved": "Navigation callback structure, actual endpoint registration and forwarding through the Subaru wrapper"
+    "callback_audit": {
+      "report": "doc/navigation-bridge-progress.md",
+      "reproduce": "python tools/audit_navigation_callbacks.py",
+      "table_bytes": 156,
+      "navigation_table_offsets": {"status": "0x4c", "next_turn": "0x50", "next_turn_distance": "0x54"},
+      "reviewed_wrapper_values": "All three navigation slots remain zero at registration",
+      "receiver_public_set_callbacks": "0x20f8c",
+      "receiver_internal_copy": "0x26494..0x264ac",
+      "endpoint_gate": "0x2752c..0x27568 rejects the reviewed table",
+      "setup_function": "0x1ab78 GALSvcCinemoIntAndroidAuto",
+      "setup_registration_call": "0x1bbe4 via PLT 0x12d78",
+      "configured_endpoint_values": {
+        "minimum_interval_native_units": 1000,
+        "height": 0,
+        "width": 0,
+        "color_depth": 0,
+        "type": 2,
+        "type_enum_name_and_interval_time_unit": "Unverified"
+      },
+      "isolated_dispatch_probe": {
+        "tool": "tools/probe_navigation_callbacks.py",
+        "mode": "Hash-pinned ARM routines under Unicorn, synthetic inputs, logging helper and dummy callback intercepted",
+        "status_values_forwarded": [0, 1, 2],
+        "distance_argument_words_preserved": 3,
+        "distance_unit_values_preserved": [0, 1, 2, 3, 4, 5, 6, 7],
+        "next_turn_callback_argument_words": 8,
+        "source_level_types_lifetimes_and_units": "Unresolved",
+        "on_unit_execution": false
+      },
+      "scope": "Static, hash-pinned build evidence; other registration paths and later mutation not excluded"
+    },
+    "unresolved": "Full typed callback ABI/ownership/threading, other registration paths and runtime forwarding"
   },
   "native_navigation": {
     "producer": "analysis/navifs/files/nav/OpenNav/SubaruOpenNavController",
@@ -31,6 +73,9 @@
     "signals": {
       "navClusterNextTurnInfo": {
         "handler": "0x8063e90",
+        "producer_publisher": "0x81163a4 in SubaruOpenNavController",
+        "producer_format": "{\"interruptFlag\":%d,\"category\":%d,\"rotaryAvailable\":%d,\"segment\":%d,\"turnIcon\":%d}",
+        "producer_partial_update_routine": "0x8116b14; -1 input argument selects cached value inside this routine, not a validated JSON sentinel",
         "observed_field_to_pps_attribute": {
           "interruptFlag": "AVN6B3_1_4_TBT_INTERRUPT_NOTICE",
           "category": "AVN6B3_2_4_TBT_CATEGORY",
@@ -49,7 +94,15 @@
       },
       "navClusterNextDestinationInfo": {
         "handler": "0x8064800",
-        "observed_fields": ["units", "digitPoint", "etaChangeFlag", "distance", "second"]
+        "producer_publisher": "0x8116320 in SubaruOpenNavController",
+        "producer_format": "{\"units\":%d,\"distance\":%d,\"second\":%d,\"etaChangeFlag\":%d,\"digitPoint\":%d}",
+        "observed_fields": ["units", "digitPoint", "etaChangeFlag", "distance", "second"],
+        "observed_field_to_pps_attribute": {
+          "units": "AVN6B2_2_0_DIST_UNIT",
+          "digitPoint": "AVN6B2_2_3_DIST_DIGIT_POINT",
+          "etaChangeFlag": "AVN6B2_7_0_ARRIVAL_TIME_UPDATED"
+        },
+        "caution": "Destination distance is not established as a next-maneuver-distance path; numeric encoding unvalidated"
       },
       "navClusterVehiclePositionInfo": {
         "handler": "0x8063444",
@@ -57,6 +110,12 @@
       }
     },
     "pps_writer": {"function": "0x806dde0", "destination": "/pps/can/send"},
+    "integer_field_parser": {
+      "function": "0x8063c7c",
+      "type_check": "Json::Value::isInt then asInt; not a boolean-field API",
+      "partial_updates": "Absent or non-integer fields are skipped; at least one recognized integer field may succeed",
+      "runtime_validated": false
+    },
     "other_interfaces": ["sendMFDRoadInfo", "sendMFDLaneInfo", "/pps/mfd-nav-cache", "/pps/can/MultiFunctionDisplay", "/pps/can/MeterCluster"]
   },
   "required_before_implementation": [

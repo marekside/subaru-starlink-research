@@ -1,0 +1,14 @@
+{"at":0,"kind":"connect","source":"android_auto","session":"phone-1"}
+{"at":0,"kind":"start","source":"android_auto","session":"phone-1","route":"aa-route-1"}
+{"at":1,"kind":"turn","source":"android_auto","session":"phone-1","route":"aa-route-1","maneuver_id":"aa-turn-1","maneuver":"left","road":"Example Road"}
+{"at":2,"kind":"distance","source":"android_auto","session":"phone-1","route":"aa-route-1","maneuver_id":"aa-turn-1","meters":250}
+{"at":3,"kind":"connect","source":"native","session":"tomtom-1"}
+{"at":3,"kind":"start","source":"native","session":"tomtom-1","route":"native-route-1"}
+{"at":4,"kind":"turn","source":"native","session":"tomtom-1","route":"native-route-1","maneuver_id":"native-turn-1","maneuver":"right","road":"Native guidance takes priority"}
+{"at":5,"kind":"cancel","source":"native","session":"tomtom-1","route":"native-route-1"}
+{"at":6,"kind":"turn","source":"android_auto","session":"phone-1","route":"aa-route-1","maneuver_id":"aa-turn-2","maneuver":"straight"}
+{"at":7,"kind":"distance","source":"android_auto","session":"phone-1","route":"aa-route-1","maneuver_id":"aa-turn-2","meters":80}
+{"at":22,"kind":"tick"}
+{"at":23,"kind":"turn","source":"android_auto","session":"phone-1","route":"aa-route-1","maneuver_id":"aa-turn-3","maneuver":"arrive"}
+{"at":24,"kind":"disconnect","source":"android_auto","session":"phone-1"}
+{"at":25,"kind":"control","enabled":false}

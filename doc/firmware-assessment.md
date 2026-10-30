@@ -9,8 +9,15 @@ status and add verified signature bindings and traced display interfaces.
 The later [wireless transport verification](wireless-android-auto-verification.md)
 establishes that the bundled Android Auto projection transport is USB-only.
 
-Assessed on 2026-10-30. The owner identifies the car as a 2017 Subaru XV and
-confirms that the firmware in `usbUpdateStock/KaliSWDL` is currently installed.
+Assessed on 2026-10-30. The owner identifies the car as a 2017 Subaru XV.
+An earlier owner statement said the supplied package was installed, but a later
+system-information photo shows **`Rel_A2.25.15.20`**, while the supplied package
+identifies itself as **`Rel_A2.24.41.20`**. The photo supersedes that assumption.
+The owner has now supplied both packages. The
+[version comparison](firmware-version-comparison.md) confirms identical relevant
+receiver/wrapper/display/HMI files and repeats the static audits successfully
+against `Rel_A2.25.15.20`. This initial assessment describes the older package;
+runtime access and recovery are still unverified. No downgrade is required.
 The exact head-unit part number and secondary display variants remain unknown.
 The owner later confirmed that built-in TomTom turn instructions appear on both
 the upper dashboard display and the display between the gauges.
@@ -238,11 +245,11 @@ validate OEM signatures or IFS checksums. The imagefs layout reference is
 From the repository root, using new output paths for each run:
 
 ```powershell
-python tools/inspect_firmware.py inventory usbUpdateStock/KaliSWDL analysis/stock-inventory.json --hash-maps
+python tools/inspect_firmware.py inventory usbUpdateStock_Rel_A2.24.41.20/KaliSWDL analysis/stock-inventory.json --hash-maps
 New-Item -ItemType Directory -Force analysis/stock-iso | Out-Null
-tar -tf usbUpdateStock/KaliSWDL/swdl.iso
+tar -tf usbUpdateStock_Rel_A2.24.41.20/KaliSWDL/swdl.iso
 # Inspect the listing before extracting an unfamiliar ISO.
-tar -xf usbUpdateStock/KaliSWDL/swdl.iso -C analysis/stock-iso
+tar -xf usbUpdateStock_Rel_A2.24.41.20/KaliSWDL/swdl.iso -C analysis/stock-iso
 python tools/inspect_firmware.py ifs analysis/stock-iso/updateOS/minifs.ifs analysis/minifs
 python tools/inspect_firmware.py ifs analysis/stock-iso/updateOS/rvcfs.ifs analysis/rvcfs
 ```
