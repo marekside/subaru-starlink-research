@@ -1,0 +1,69 @@
+{
+  "status": "Observed in static analysis; not a validated runtime API or transmit recipe",
+  "firmware": "EU High Rel_A2.24.41.20",
+  "owner_observation": {
+    "date": "2026-10-30",
+    "source": "Owner report; not a captured bus trace",
+    "built_in_navigation_turn_instructions": ["upper dashboard display", "display between the gauges"],
+    "implication": "Both installed displays already support stock navigation instructions; transport details and Android Auto forwarding remain unresolved"
+  },
+  "android_auto": {
+    "native_wireless": {
+      "status": "Not implemented by the supplied stock receiver's projection transport",
+      "verification": "Explicit USB protocol gate and direct USB transport construction verified in code",
+      "receiver_protocol_gate": "0x2e4a4..0x2e580",
+      "required_protocol": "usb",
+      "transport_class": "NmeAndroidAutoUSBTransport",
+      "report": "doc/wireless-android-auto-verification.md",
+      "hardware_capability": "Not determined"
+    },
+    "receiver_library": "analysis/second1/files/second1/MediaOne/cinemo/libNmeAndroidAuto.so",
+    "observed_callbacks": ["OnNavigation_Status", "OnNavigation_NextTurn", "OnNavigation_NextTurnDistance"],
+    "wrapper_library": "analysis/second1/files/second1/lib/libGALSVC.so",
+    "reviewed_callback_registration": "0x16a1c",
+    "unresolved": "Navigation callback structure, actual endpoint registration and forwarding through the Subaru wrapper"
+  },
+  "native_navigation": {
+    "producer": "analysis/navifs/files/nav/OpenNav/SubaruOpenNavController",
+    "service": "com.harman.service.NavigationCluster",
+    "consumer": "analysis/second1/files/second1/bin/MFDService",
+    "subscription_setup": "0x80642ec",
+    "signals": {
+      "navClusterNextTurnInfo": {
+        "handler": "0x8063e90",
+        "observed_field_to_pps_attribute": {
+          "interruptFlag": "AVN6B3_1_4_TBT_INTERRUPT_NOTICE",
+          "category": "AVN6B3_2_4_TBT_CATEGORY",
+          "rotaryAvailable": "AVN6B3_3_7_TBT_ROTELY",
+          "segment": "AVN6B3_3_6_TBT_ROAD_SEGMENT",
+          "turnIcon": "AVN6B3_3_0_TBT_DIRECTION"
+        }
+      },
+      "navClusterNavigationStatus": {
+        "handler": "0x80640b8",
+        "observed_field_to_pps_attribute": {
+          "operable": "AVN6B1_5_2_TYPE_NAVI",
+          "failureMode": "AVN6B1_5_0_FAIL_AVN",
+          "guidanceActive": "AVN6B2_1_4_MODE_NAVI"
+        }
+      },
+      "navClusterNextDestinationInfo": {
+        "handler": "0x8064800",
+        "observed_fields": ["units", "digitPoint", "etaChangeFlag", "distance", "second"]
+      },
+      "navClusterVehiclePositionInfo": {
+        "handler": "0x8063444",
+        "observed_fields": ["heading", "iconType"]
+      }
+    },
+    "pps_writer": {"function": "0x806dde0", "destination": "/pps/can/send"},
+    "other_interfaces": ["sendMFDRoadInfo", "sendMFDLaneInfo", "/pps/mfd-nav-cache", "/pps/can/MultiFunctionDisplay", "/pps/can/MeterCluster"]
+  },
+  "required_before_implementation": [
+    "Validate field types and enum meanings using stock observations",
+    "Establish distance units/scaling and turn-icon mappings",
+    "Determine endpoint and callback registration in the Android Auto wrapper",
+    "Determine arbitration with built-in navigation and reset behavior",
+    "Identify each display's transport and timing requirements, and a reversible runtime extension mechanism"
+  ]
+}
